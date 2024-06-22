@@ -33,13 +33,26 @@ class Window:
                     self.__player_id = 2
                 else:
                     self.__player_id = 1
+                self.draw_board()
+                return
 
     def draw_board(self):
         for y in range(6):
             for x in range(7):
                 l = x * self.__cell_size
                 t = y * self.__cell_size
-                self.__canvas.create_rectangle(l, t, l + self.__cell_size, t + self.__cell_size)
+                r = l + self.__cell_size
+                b = t + self.__cell_size
+                self.__canvas.create_rectangle(l, t, r, b, width=5, fill="gray70")
+
+                v = self.get_cell(x, y)
+                col = "gray"
+                if v == 1:
+                    col = "blue"
+                elif v == 2:
+                    col = "red"
+                m = self.__cell_size * .2
+                self.__canvas.create_oval(l + m, t + m, r - m, b - m, fill=col, width=2)
 
 
     def redraw(self):
