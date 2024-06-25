@@ -20,10 +20,10 @@ class Window:
 
     
     def set_cell(self, x, y, v):
-        self.__board[y * BOARD_ROWS + x] = v
+        self.__board[y * BOARD_COLS + x] = v
 
     def get_cell(self, x, y):
-        result = self.__board[y * BOARD_ROWS + x]
+        result = self.__board[y * BOARD_COLS + x]
         return result
     
     def check_game_over(self, x, y, player_id):
@@ -46,7 +46,23 @@ class Window:
                 count = 0
         if count >= 4:
             return True
-    
+        
+        count = 0
+        if x > BOARD_ROWS - 1 - y:
+            startx = x - (BOARD_ROWS - y - 1)
+            starty = BOARD_ROWS - 1
+        else:
+            startx = 0
+            starty = y + x
+        
+        count = 0
+        if y > x:
+            startx = 0
+            starty = y - x
+        else:
+            startx = x - y
+            starty = 0
+            
         return False
         
     def click_column(self, event):
@@ -54,6 +70,7 @@ class Window:
         for y in range(BOARD_ROWS - 1, -1, -1):
             if self.get_cell(x, y) == 0:
                 self.set_cell(x, y, self.__player_id)
+                self.check_game_over(x, y, self.__player_id)
                 if self.__player_id == 1:
                     self.__player_id = 2
                 else:
@@ -78,6 +95,7 @@ class Window:
                     col = "red"
                 m = self.__cell_size * .2
                 self.__canvas.create_oval(l + m, t + m, r - m, b - m, fill=col, width=2)
+                self.__canvas.create_text(l + m, t + m, text=f"{x},{y}", fill="black", font=("Helvetica 15 bold"))
 
 
     def redraw(self):
