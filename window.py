@@ -34,8 +34,8 @@ class Window:
                 count += 1
             else:
                 count = 0
-        if count >= 4:
-            return True
+            if count >= 4:
+                return True
         
         count = 0
         for row in range(BOARD_ROWS):
@@ -44,8 +44,8 @@ class Window:
                 count += 1
             else:
                 count = 0
-        if count >= 4:
-            return True
+            if count >= 4:
+                return True
         
         count = 0
         curr_x = 0
@@ -89,6 +89,11 @@ class Window:
             
         return False
     
+    def reset_board(self):
+        for i in range(len(self.__board)):
+            self.__board[i] = 0
+        self.__player_id = 1
+        
     def set_column(self, x):
         if x < 0 or x >= BOARD_COLS:
             return
@@ -96,6 +101,11 @@ class Window:
             if self.get_cell(x, y) == 0:
                 self.set_cell(x, y, self.__player_id)
                 is_gameover = self.check_game_over(x, y, self.__player_id)
+                if is_gameover:
+                    self.reset_board()
+                    self.draw_board()
+                    return
+
                 if self.__player_id == 1:
                     self.__player_id = 2
                 else:
