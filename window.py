@@ -48,35 +48,65 @@ class Window:
             return True
         
         count = 0
+        curr_x = 0
+        curr_y = 0
         if x > BOARD_ROWS - 1 - y:
-            startx = x - (BOARD_ROWS - y - 1)
-            starty = BOARD_ROWS - 1
+            curr_x = x - (BOARD_ROWS - y - 1)
+            curr_y = BOARD_ROWS - 1
         else:
-            startx = 0
-            starty = y + x
+            curr_x = 0
+            curr_y = y + x
+        while curr_x < BOARD_COLS and curr_y < BOARD_ROWS:
+            v = self.get_cell(curr_x, curr_y)
+            if v == player_id:
+                count += 1
+            else:
+                count = 0
+            curr_x += 1
+            curr_y -= 1
+            if count >= 4:
+                return True
         
         count = 0
+        curr_x = 0
+        curr_y = 0
         if y > x:
-            startx = 0
-            starty = y - x
+            curr_x = 0
+            curr_y = y - x
         else:
-            startx = x - y
-            starty = 0
+            curr_x = x - y
+            curr_y = 0
+        while curr_x < BOARD_COLS and curr_y < BOARD_ROWS:
+            v = self.get_cell(curr_x, curr_y)
+            if v == player_id:
+                count += 1
+            else:
+                count = 0
+            curr_x += 1
+            curr_y += 1
+            if count >= 4:
+                return True
             
         return False
-        
-    def click_column(self, event):
-        x = event.x // self.__cell_size
+    
+    def set_column(self, x):
+        if x < 0 or x >= BOARD_COLS:
+            return
         for y in range(BOARD_ROWS - 1, -1, -1):
             if self.get_cell(x, y) == 0:
                 self.set_cell(x, y, self.__player_id)
-                self.check_game_over(x, y, self.__player_id)
+                is_gameover = self.check_game_over(x, y, self.__player_id)
                 if self.__player_id == 1:
                     self.__player_id = 2
                 else:
                     self.__player_id = 1
                 self.draw_board()
                 return
+        
+    def click_column(self, event):
+        x = event.x // self.__cell_size
+        self.set_column(x)
+        
 
     def draw_board(self):
         for y in range(BOARD_ROWS):
