@@ -17,6 +17,7 @@ class Window:
         self.__cell_size = cell_size
         self.__board = np.full(BOARD_COLS * BOARD_ROWS, 0)
         self.__player_id = 1
+        self.__moves_left = BOARD_COLS * BOARD_ROWS
 
     
     def set_cell(self, x, y, v):
@@ -35,7 +36,7 @@ class Window:
             else:
                 count = 0
             if count >= 4:
-                return True
+                return True, player_id
         
         count = 0
         for row in range(BOARD_ROWS):
@@ -45,7 +46,7 @@ class Window:
             else:
                 count = 0
             if count >= 4:
-                return True
+                return True, player_id
         
         count = 0
         curr_x = 0
@@ -65,7 +66,7 @@ class Window:
             curr_x += 1
             curr_y -= 1
             if count >= 4:
-                return True
+                return True, player_id
         
         count = 0
         curr_x = 0
@@ -85,14 +86,17 @@ class Window:
             curr_x += 1
             curr_y += 1
             if count >= 4:
-                return True
-            
-        return False
+                return True, player_id
+
+        if self.__moves_left == 0:
+            return True, 0
+        return False, 0
     
     def reset_board(self):
         for i in range(len(self.__board)):
             self.__board[i] = 0
         self.__player_id = 1
+        self.__moves_left = BOARD_COLS * BOARD_ROWS
         
     def set_column(self, x):
         if x < 0 or x >= BOARD_COLS:
@@ -100,8 +104,9 @@ class Window:
         for y in range(BOARD_ROWS - 1, -1, -1):
             if self.get_cell(x, y) == 0:
                 self.set_cell(x, y, self.__player_id)
-                is_gameover = self.check_game_over(x, y, self.__player_id)
-                if is_gameover:
+                self.__moves_left -= 1
+                gameover_result = self.check_game_over(x, y, self.__player_id)
+                if gameover_result[0]:
                     self.reset_board()
                     self.draw_board()
                     return
