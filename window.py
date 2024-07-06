@@ -1,5 +1,6 @@
 from tkinter import Tk, CENTER, Canvas
 import numpy as np
+import random
 
 BOARD_COLS = 7
 BOARD_ROWS = 6
@@ -92,6 +93,14 @@ class Window:
             return True, 0
         return False, 0
     
+    def get_empty_cols(self):
+        result = []
+        for i in range(BOARD_COLS):
+            v = self.get_cell(i, 0)
+            if v == 0:
+                result.append(i)
+        return result
+    
     def reset_board(self):
         for i in range(len(self.__board)):
             self.__board[i] = 0
@@ -113,14 +122,21 @@ class Window:
 
                 if self.__player_id == 1:
                     self.__player_id = 2
+                    self.ai_move()
                 else:
                     self.__player_id = 1
                 self.draw_board()
                 return
         
     def click_column(self, event):
-        x = event.x // self.__cell_size
-        self.set_column(x)
+        if self.__player_id == 1:
+            x = event.x // self.__cell_size
+            self.set_column(x)
+
+    def ai_move(self):
+        cols = self.get_empty_cols()
+        col = random.randrange(len(cols))
+        self.set_column(cols[col])
         
 
     def draw_board(self):
