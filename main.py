@@ -17,7 +17,7 @@ class GameState:
     def __init__(self):
          self.board = np.full(BOARD_W * BOARD_H, 0)
 
-def get_cell(state, x, y):
+def get_cell(state: GameState, x: int, y: int)-> int:
         result = state.board[y * BOARD_W + x]
         return result
 
@@ -27,6 +27,8 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((BOARD_W * CELL_SIZE, BOARD_H * CELL_SIZE))
     pygame.display.set_caption("Connect Four AI")
+    #font = pygame.font.SysFont(None, 30)
+    font = pygame.font.Font(pygame.font.get_default_font(), 15)
     timer = pygame.time.Clock()
     #win = Window(100)
     #win.draw_board()
@@ -40,10 +42,15 @@ def main():
         dt = timer.get_time() * 0.001
         screen.fill("white")
 
-
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 running = False
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                buttons = pygame.mouse.get_pressed()
+                if buttons[0]:
+                    m_pos = pygame.mouse.get_pos()
+                    x = m_pos[0] // CELL_SIZE
+                    print(x)
 
         for y in range(BOARD_H):
             for x in range(BOARD_W):
@@ -66,6 +73,8 @@ def main():
                 pygame.draw.ellipse(screen, col, [l + m, t + m, CELL_SIZE - 2 * m, CELL_SIZE - 2 * m], 0)
                 pygame.draw.ellipse(screen, BLACK, [l + m, t + m, CELL_SIZE - 2 * m, CELL_SIZE - 2 * m], 2)
                 #self.__canvas.create_text(l + m, t + m, text=f"{x},{y}", fill="black", font=("Helvetica 15 bold"))
+                text_render = font.render(f"{x},{y}", True, BLACK)
+                screen.blit(text_render, (l + m, t + m))
 
         pygame.display.flip()
     pygame.quit()
