@@ -1,5 +1,5 @@
 import numpy as np
-import random
+import numpy.typing as npt
 
 BOARD_W = 7
 BOARD_H = 6
@@ -17,22 +17,38 @@ ID_P1 = 1
 ID_P2 = 2
 
 class Player:
-    def __init__(self, id: int, is_ai = False):
-        self.id = id
-        self.is_ai = is_ai
-        self.win_count = 0
+    id: int
+    is_ai: bool
+    win_count: int
 
 class GameState:
-    def __init__(self):
-         self.board = np.full(BOARD_W * BOARD_H, 0)
-         self.players = []
-         self.players.append(Player(ID_P1, False))
-         self.players.append(Player(ID_P2, True))
-         self.current_player = 0
-         self.moves_left = BOARD_W * BOARD_H
-         self.ai_delay = AI_DELAY
+    board: npt.NDArray[np.int32]
+    players: list[Player]
+    current_player: int
+    moves_left: int
+    ai_delay: float
 
-def set_cell(state: GameState, x: int, y: int, v: int):
+def init_game_state()-> GameState:
+    player1 = Player()
+    player1.id = ID_P1
+    player1.is_ai = False
+    player1.win_count = 0
+
+    player2 = Player()
+    player2.id = ID_P2
+    player2.is_ai = True
+    player2.win_count = 0
+
+    state = GameState()
+    state.board = np.zeros(BOARD_W * BOARD_H, dtype=np.int32)
+    state.players = [player1, player2]
+    state.current_player = 0
+    state.moves_left = BOARD_W * BOARD_H
+    state.ai_delay = AI_DELAY
+
+    return state
+
+def set_cell(state: GameState, x: int, y: int, v: int)-> None:
         state.board[y * BOARD_W + x] = v
 
 def get_cell(state: GameState, x: int, y: int)-> int:
@@ -104,22 +120,18 @@ def check_game_over(state: GameState, x: int, y: int, player_id: int)->tuple[boo
             return True, 0
         return False, 0
 
-def get_empty_cols(state: GameState)->list[int]:
-    result = []
-    for i in range(BOARD_W):
-        v = get_cell(state, i, 0)
-        if v == ID_E:
-            result.append(i)
+def get_empty_cols(state: GameState)-> list[int]:
+    result = [i for i in range(BOARD_W) if get_cell(state, i, 0) == ID_E]
     return result
     
-def reset_board(state: GameState):
+def reset_board(state: GameState)-> None:
     for i in range(len(state.board)):
         state.board[i] = 0
     state.current_player = 0
     state.moves_left = BOARD_W * BOARD_H
     state.ai_delay = AI_DELAY
 
-def set_column(state: GameState, x: int, player_id: int):
+def set_column(state: GameState, x: int, player_id: int)-> None:
     if x < 0 or x >= BOARD_W:
         return
     
@@ -140,10 +152,10 @@ def set_column(state: GameState, x: int, player_id: int):
                 state.current_player = 0
             return
         
-def ai_move(state: GameState, player_id: int, dt: float):
+def ai_move(state: GameState, player_id: int, dt: float)-> None:
     if state.ai_delay <= 0:
         cols = get_empty_cols(state)
-        col = cols[random.randrange(len(cols))]
+        col = cols[np.random.randint(len(cols))]
         set_column(state, col, player_id)
         state.ai_delay = AI_DELAY
     state.ai_delay -= dt

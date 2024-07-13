@@ -2,7 +2,7 @@ import pygame, sys
 from pygame.locals import *
 from game import *
 
-def main():
+def main() -> None:
 
     pygame.init()
     screen = pygame.display.set_mode((BOARD_W * CELL_SIZE, BOARD_H * CELL_SIZE))
@@ -11,7 +11,7 @@ def main():
     timer = pygame.time.Clock()
     running = True
 
-    state = GameState()
+    state = init_game_state()
 
     while running:
         timer.tick(FPS)
@@ -57,4 +57,5 @@ def main():
     pygame.quit()
     sys.exit()
 
-main()
+if __name__ == "__main__":
+    main()
