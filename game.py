@@ -16,18 +16,6 @@ ID_E = 0
 ID_P1 = 1
 ID_P2 = 2
 
-class ButtonState:
-    def __init__(self):
-        self.is_down = False
-        self.was_changed = False
-
-class GameInput:
-    def __init__(self):
-        self.dt = 0.0
-        self.mouse_x = 0
-        self.mouse_y = 0
-        self.mouse_left = ButtonState()
-
 class Player:
     def __init__(self, id: int, is_ai = False):
         self.id = id
@@ -39,7 +27,7 @@ class GameState:
          self.board = np.full(BOARD_W * BOARD_H, 0)
          self.players = []
          self.players.append(Player(ID_P1, False))
-         self.players.append(Player(ID_P2, False))
+         self.players.append(Player(ID_P2, True))
          self.current_player = 0
          self.moves_left = BOARD_W * BOARD_H
          self.ai_delay = AI_DELAY
@@ -159,17 +147,3 @@ def ai_move(state: GameState, player_id: int, dt: float):
         set_column(state, col, player_id)
         state.ai_delay = AI_DELAY
     state.ai_delay -= dt
-
-def is_button_pressed(button: ButtonState):
-    result = button.is_down and button.was_changed
-    return result
-
-def update(state: GameState, input: GameInput):
-    if is_button_pressed(input.mouse_left):
-         if state.players[state.current_player].is_ai == False:
-            
-            m_x = input.mouse_x // CELL_SIZE
-            set_column(state, m_x, state.players[state.current_player].id)
-
-    if state.players[state.current_player].is_ai == True:
-            ai_move(state, state.players[state.current_player].id, input.dt)
