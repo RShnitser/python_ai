@@ -5,11 +5,11 @@ BOARD_W = 7
 BOARD_H = 6
 CELL_SIZE = 100
 FPS = 60
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-GRAY = (150, 150, 150)
-DARK_GRAY = (80, 80, 80)
-BLACK = (0, 0, 0, 0)
+# RED = (255, 0, 0)
+# BLUE = (0, 0, 255)
+# GRAY = (150, 150, 150)
+# DARK_GRAY = (80, 80, 80)
+# BLACK = (0, 0, 0, 0)
 AI_DELAY = 0.5
 
 ID_E = 0
