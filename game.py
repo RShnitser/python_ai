@@ -16,9 +16,16 @@ ID_E = 0
 ID_P1 = 1
 ID_P2 = 2
 
+SCREEN_MENU = 0
+SCREEN_GAME = 1
+
+PLAYER_MODE_HUMAN = 0
+PLAYER_MODE_RANDOM = 1
+PLAYER_MODE_NETWORK = 2
+
 class Player:
     id: int
-    is_ai: bool
+    mode: int
     win_count: int
 
 class GameState:
@@ -27,6 +34,8 @@ class GameState:
     current_player: int
     moves_left: int
     ai_delay: float
+    screen: int
+    test: int
 
 def init_game_state()-> GameState:
     player1 = Player()
@@ -45,6 +54,9 @@ def init_game_state()-> GameState:
     state.current_player = 0
     state.moves_left = BOARD_W * BOARD_H
     state.ai_delay = AI_DELAY
+    state.screen = SCREEN_MENU
+
+   
 
     return state
 
